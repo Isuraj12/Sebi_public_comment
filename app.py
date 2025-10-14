@@ -1,6 +1,6 @@
 import streamlit as st
 import fitz  
-import pytesseract
+import easyocr
 from PIL import Image
 import io
 import re
@@ -16,6 +16,7 @@ genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 model = genai.GenerativeModel("gemini-2.5-flash")
 
 
+ocr_reader = easyocr.Reader(['en'], gpu=False)
 
 def extract_text_from_pdf(pdf_file):
     """
@@ -33,7 +34,8 @@ def extract_text_from_pdf(pdf_file):
                 pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
                 img_data = pix.tobytes("png")
                 img = Image.open(io.BytesIO(img_data))
-                ocr_text = pytesseract.image_to_string(img, lang="eng")
+                ocr_result = ocr_reader.readtext(img)
+                ocr_text = " ".join([t[1] for t in ocr_result])
                 all_text += ocr_text + "\n"
             else:
                 all_text += text + "\n"
