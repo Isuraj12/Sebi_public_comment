@@ -5,7 +5,7 @@ from PIL import Image
 import io
 import re
 import google.generativeai as genai
-
+import numpy as np
 # --- Configuration ---
 
 # Configure Gemini API
@@ -34,9 +34,11 @@ def extract_text_from_pdf(pdf_file):
                 pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
                 img_data = pix.tobytes("png")
                 img = Image.open(io.BytesIO(img_data))
-                ocr_result = ocr_reader.readtext(img)
+    # Convert PIL image to NumPy array for EasyOCR
+                ocr_result = ocr_reader.readtext(np.array(img))
                 ocr_text = " ".join([t[1] for t in ocr_result])
                 all_text += ocr_text + "\n"
+
             else:
                 all_text += text + "\n"
         doc.close()
