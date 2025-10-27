@@ -61,25 +61,43 @@ def get_llm_analysis(document_text):
         return "No text extracted from PDF for analysis."
 
     prompt = f"""
-    Analyze the following official document (likely a consultation paper or draft circular from SEBI - Securities and Exchange Board of India).
+    • The review draft must begin by classifying the consultation paper under the most
+appropriate market division: Primary Markets, Secondary Markets, Commodity Markets, or
+External Markets
+1. Background / Regulatory Context/ Introduction
+• Existing framework, evolution, pain point triggering reform
+• Legislative / circular / regulatory history
+2. Summary of Key Proposals Only include what SEBI has proposed
+• Neutral narration, not opinion
+3. Critical Analysis of the Proposals
+The core of the review, structured proposal-by-proposal as they appear in the CP.
+*For each distinct proposal in the CP (e.g., Proposal 1, Proposal 2...), use the following sub-
+structure:
+• Proposal Number: Title of Proposal from CP
+• Concept Proposed: A clear, neutral summary of what SEBI is proposing.
+• SEBI&#39;s Rationale: The reasoning and policy objectives behind the proposal as stated by
+SEBI.
+• Global Benchmarking: Analysis of how similar issues are regulated in key international
+jurisdictions (e.g., US SEC, UK FCA, EU ESMA, Singapore MAS, Hong Kong
+HKEX/SFC). (The global benchmarking should be country specific, and take only those
+jurisdiction which suits India financial market) (Provide references link for this part only)
+• Critical Assessment &amp; Recommendations:
+o Our Stance: Clearly state the team&#39;s position (e.g., Accepted, Accepted with
+Modification, Not Accepted).
+o Supporting Rationale: Justification for the stance. Why is it good/bad? What are the
+potential impacts?
+o Proposed Modifications/Safeguards: If accepted with modification, provide specific,
+actionable alternative language or suggestions (e.g., phased implementation, different
+thresholds, added anti-avoidance clauses).
 
-    Please provide a concise summary in the following structure, identifying the key sections:
-
-    ### Background & Objective
-    [Summarize the background and the main objectives of the document. Keep it factual and directly based on the document's content.]
-
-    ### Key Provisions/Proposals
-    [List and briefly explain the main proposals or key provisions outlined in the document. Use bullet points or numbered lists if appropriate for clarity. Focus on the core changes or requirements.]
-
-    ### Our Opinion
-    [Provide an informed opinion or analysis of the document's proposals. Discuss potential positive implications, benefits, or significance for the stakeholders (e.g., investors, market participants, regulatory transparency). This should be a synthesized perspective based on the document's intent and common regulatory goals.]
-
-    ---
-    Document Text:
+4. Conclusion and Overall Recommendations
+5. List down the 5 relevant questions that the Finance Ministry should ask the regulator
+(SEBI) about this consultation paper. (The questions must be critical, that would be
+useful in enhancing the structure of the Indian market).
     {document_text}
     ---
 
-    Ensure the output strictly adheres to the requested three main headings.
+    Ensure the output strictly adheres to the requested  main headings.
     """
     try:
         response = model.generate_content(prompt)
